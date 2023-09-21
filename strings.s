@@ -15,6 +15,8 @@
 * Itagaki Fumihiko 17-Sep-94  -tオプションを追加
 * Itagaki Fumihiko 17-Sep-94  -nオプションを追加
 * 1.1
+* Itagaki Fumihiko 30-Sep-94  出力が端末でないと正常に動作しない不具合（1.1でのエンバグ）を修正
+* 1.2
 *
 * Usage: strings [-asuqvo] [-t {doxX}] [-n <N>] [-<N>] [--] [<ファイル>] ...
 
@@ -821,9 +823,11 @@ putc_do_buffering:
 
 		bsr	flush_outbuf
 putc_do_buffering_1:
+		move.l	a0,-(a7)
 		movea.l	outbuf_ptr,a0
 		move.b	d0,(a0)+
 		move.l	a0,outbuf_ptr
+		movea.l	(a7)+,a0
 		subq.l	#1,outbuf_free
 putc_done:
 puts_done:
@@ -921,7 +925,7 @@ malloc:
 .data
 
 	dc.b	0
-	dc.b	'## strings 1.1 ##  Copyright(C)1993-94 by Itagaki Fumihiko',0
+	dc.b	'## strings 1.2 ##  Copyright(C)1993-94 by Itagaki Fumihiko',0
 
 msg_myname:		dc.b	'strings: ',0
 msg_no_memory:		dc.b	'メモリが足りません',CR,LF,0
